@@ -24,16 +24,15 @@ context.fill();
 canvas.onmousedown = function(event){
   var x = event.offsetX;
   var y = event.offsetY;
-  if((x>=250 && x<=450)&&(y>=250 && y<=450)){
-    context.fillStyle = "darkorange";
-    context.arc(400, 350, 100, 0, Math.PI*2, false);
+  if(event.button == 0){
+    context.fillStyle = "white";
+    context.arc(350, 350, 101, 0, Math.PI*2, false);
     context.fill();
+  } else if(event.button == 2){
+    if((x>=250 && x<=450)&&(y>=250 && y<=450)){
+      context.fillStyle = "darkorange";
+      context.arc(400, 350, 100, 0, Math.PI*2, false);
+      context.fill();
+    }
   }
-  // else{
-  //   context.fillStyle = "orange";
-  //   context.arc(350, 350, 100, 0, Math.PI*2, false);
-  //   context.fill();
-  // }
 }
-//   context.fillStyle = "darkorange";
-// }
