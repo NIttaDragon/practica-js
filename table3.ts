@@ -42,8 +42,7 @@ function createTableMap(columnNumber:number, rowSize:number):Map<PrimaryCell, Ot
     let data:OtherCellArray = [] // создание массива для значений строки
     for(let j = 0; j < rowSize-1; j++)
       data[j] = Math.floor(Math.random()*1000); // запись знаяений в массив
-    let word = randomWord(i);
-    tableMap.set(word, data); //создание пар ключ-значение для данных
+    tableMap.set(randomWord(i), data); //создание пар ключ-значение для данных
   }
   console.log(tableMap);
   return tableMap
