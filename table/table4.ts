@@ -49,16 +49,16 @@ function createTableMap(columnNumber: number, rowSize: number): Map<PrimaryCell,
 }
 
 function sortMap(oldTableMap: Map<PrimaryCell, OtherCellArray>): Map<PrimaryCell, OtherCellArray>{
-  let sortArray = new Array();
+  let sortedKeyArray = new Array();
   let i = 0;
   oldTableMap.forEach((value: OtherCellArray, key: PrimaryCell) => {
-    sortArray[i] = key;
+    sortedKeyArray[i] = key;
     i++;
   });
-  sortArray.sort();
+  sortedKeyArray.sort();
   let newTableMap = new Map();
   for(let j = 0; j < oldTableMap.size; j++){
-    newTableMap.set(sortArray[j], oldTableMap.get(sortArray[j]));
+    newTableMap.set(sortedKeyArray[j], oldTableMap.get(sortArray[j]));
   }
   return newTableMap;
 }
