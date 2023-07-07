@@ -1,0 +1,12 @@
+{
+  "name": "firstproject",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "npm run first && npm run second",
+    "first": "tsc --target es6 table.ts",
+    "second": "http-server"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.29.3"
+  }
+}
