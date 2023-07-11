@@ -10,68 +10,70 @@ class CreateTable {
     private tableEntriesIterator; //итератор для перебора значений MAP
     private hasTotalRow = false; //итоговая строка таблицы
     private rowArray = []; //массив для значений строки
-    private globalKeyNumber;
-    private globalRowLong;
+    private globalKeyNumber; //глобальная переменная для хранения количества ключей
+    private globalRowLong; //глобальная переменная для хранения длины строк
 
     //создание элементов таблицы
-    constructor(contentMap, keyNumber, rowLong){
+    constructor(contentMap){
         this.wrapper.className = 'wrapper';
         this.tableEl.appendChild(this.tbody); //выделение в таблице места для данных
-        this.globalKeyNumber = keyNumber;
-        this.globalRowLong = rowLong;
         //вывод на экран пользователя несколько началльных элементов таблицы
         this.tableEntriesIterator = contentMap.entries();
-        this.appendRows(20/*, keyNumber, rowLong*/);
+        this.appendRows(20);
         //обработчик скролла
         document.addEventListener("scroll", ()=>{
             let windowHeight = document.documentElement.clientHeight; //нахождение высоты окна браузера
             let lastRowCoord = this.tbody.lastElementChild.getBoundingClientRect(); // получение координат последней строки
             let isNeedToAddRow = Math.abs(windowHeight - lastRowCoord.bottom) < 10; //проверка расстояния между окном браузера и концом таблицы
-            if(isNeedToAddRow)  this.appendRows(1/*, keyNumber, rowLong*/); //добавление строки по необходимости
+            if(isNeedToAddRow)  this.appendRows(1); //добавление строки по необходимости
         });
         this.wrapper.appendChild(this.tableEl);
     }
 
-    private appendRows(size: number/*, keyNumber, rowLong*/){
+    //добавление новых строк в таблицу
+    private appendRows(size: number){
         for(let j= 0; j < size; j++){
             const rowEntry = this.tableEntriesIterator.next().value; //получение значений для новой строки
-            if(this.hasTotalRow == false && rowEntry == undefined) { //создание строки с итогами
-                this.hasTotalRow = true;
-                this.appendTotalRow(/*keyNumber, rowLong*/);
+            if(this.hasTotalRow == false && rowEntry == undefined) { //строки с итогами ещё нет и MAP закончилсы
+                this.appendTotalRow(); //добавление строки итогов
+                this.hasTotalRow = true; //переключение флага наличия строки итогов
             }
-            else if(this.hasTotalRow != true){
-                this.rowArray.push(rowEntry[1]);
+            else if(this.hasTotalRow != true){ //строки с итогами ещё нет и MAP не закончился
+                this.globalKeyNumber = rowEntry[0].length; //запись количества ключей в глобальную переменную
+                this.globalRowLong = rowEntry[1].length; //запись длины строки в глобальную переменную
+                this.rowArray.push(rowEntry[1]); //запись данных строки в массив строк
                 this.tbody.appendChild(this.createHTMLRow(rowEntry[0], rowEntry[1])); //добавление новой строки в таблицу
-            } else if(this.hasTotalRow == true)
+            } else if(this.hasTotalRow == true) //если строка итогов есть, то выход
                 break;
         }
     }
 
-    private appendTotalRow(/*keyNumber, rowlong*/){
-        let totalRow = document.createElement('tr');
+    //создание строки итогов
+    private appendTotalRow(){
+        let totalRow = document.createElement('tr'); //создание строки
         const zeroKey: HTMLTableCellElement = document.createElement('td'); // создание ячейки строки
-        zeroKey.innerHTML = 'Total:';
+        zeroKey.innerHTML = 'Total:'; //заглавие строки
         totalRow.appendChild(zeroKey);
-        for(let i= 1; i < this.globalKeyNumber; i++){
+        for(let i= 1; i < this.globalKeyNumber; i++){ //запись пустых ключей в остальные клетки
             const zeroKey: HTMLTableCellElement = document.createElement('td'); // создание ячейки строки
             zeroKey.innerHTML = '';
             totalRow.appendChild(zeroKey);
         }
-        let someArray2 = [];
-        for(let j = 0; j < this.globalRowLong; j++)
-            someArray2[j] = 0;
-        let lengh = this.rowArray.length;
+        let totalSummArray = []; //массив для суммирования значений таблицы
+        for(let j = 0; j < this.globalRowLong; j++) //избавление массива от мусора
+            totalSummArray[j] = 0;
+        let lengh = this.rowArray.length; //вычисление количества строк
         for(let i= 0; i < lengh; i++){
-            let someArray = this.rowArray.shift();
+            let someArray = this.rowArray.shift(); //взятие первого элемента из массива строк с последующим удалением
             for(let j= 0; j < this.globalRowLong; j++)
-                someArray2[j] += someArray[j];
+                totalSummArray[j] += someArray[j]; //суммирование по всем строкам
         }
-        for(let i= 0; i < this.globalRowLong; i++){
+        for(let i= 0; i < this.globalRowLong; i++){ //заполнение строк суммами
             const totalColumnSumm: HTMLTableCellElement = document.createElement('td'); // создание ячейки строки
-            totalColumnSumm.innerHTML = <string>(<unknown>someArray2[i]);
+            totalColumnSumm.innerHTML = <string>(<unknown>totalSummArray[i]);
             totalRow.appendChild(totalColumnSumm);
         }
-        this.tbody.insertAdjacentElement('beforeend', totalRow);
+        this.tbody.insertAdjacentElement('beforeend', totalRow); //вставка строки итогов в таблицу после основных строк
     }
 
     // создание строк
@@ -94,7 +96,7 @@ class CreateTable {
     }
 }
 
-let table = new CreateTable(createContentMap(3,100, 12), 3,12); // создание таблицы
+let table = new CreateTable(createContentMap(3,20, 12)); // создание таблицы
 document.body.append(table.wrapper); //выделение в DOM места для таблицы
 
 // создание и заполнение MAP
