@@ -17,8 +17,9 @@ class CreateTable {
     constructor(contentMap){
         this.wrapper.className = 'wrapper';
         this.tableEl.appendChild(this.tbody); //выделение в таблице места для данных
+        const content = this.sortMap(contentMap);
         //вывод на экран пользователя несколько началльных элементов таблицы
-        this.tableEntriesIterator = contentMap.entries();
+        this.tableEntriesIterator = content.entries();
         this.appendRows(20);
         //обработчик скролла
         document.addEventListener("scroll", ()=>{
@@ -28,6 +29,13 @@ class CreateTable {
             if(isNeedToAddRow)  this.appendRows(1); //добавление строки по необходимости
         });
         this.wrapper.appendChild(this.tableEl);
+    }
+
+    //сортировка MAP по ключу
+    sortMap(contentMap: Map<CellArray, CellArray>): Map<CellArray, CellArray>{
+        return new Map([...contentMap.entries()].sort(
+            (firstKeyArray, secondKeyArray) => firstKeyArray[0] > secondKeyArray[0] ? 1 : firstKeyArray[0] < secondKeyArray[0] ? -1 : 0
+        ));
     }
 
     //добавление новых строк в таблицу
@@ -96,7 +104,7 @@ class CreateTable {
     }
 }
 
-let table = new CreateTable(createContentMap(3,20, 12)); // создание таблицы
+let table = new CreateTable(createContentMap(3,22, 12)); // создание таблицы
 document.body.append(table.wrapper); //выделение в DOM места для таблицы
 
 // создание и заполнение MAP
@@ -111,14 +119,7 @@ function createContentMap(keyNumber: number, columnNumber: number, rowSize: numb
             otherCellDataArray[j] = Math.floor(Math.random()*1000); // запись значений в массив
         contentMap.set(primaryCellDataArray, otherCellDataArray); //создание пар ключ-значение для данных
     }
-    return sortMap(contentMap); // сортировка полученного MAP
-}
-
-//сортировка MAP по ключу
-function sortMap(contentMap: Map<CellArray, CellArray>): Map<CellArray, CellArray>{
-    return new Map([...contentMap.entries()].sort(
-        (firstKeyArray, secondKeyArray) => firstKeyArray[0] > secondKeyArray[0] ? 1 : firstKeyArray[0] < secondKeyArray[0] ? -1 : 0
-    ));
+    return contentMap;
 }
 
 //рандомная строка
@@ -137,7 +138,5 @@ function randomWord():string {
         'Орлан','Вывих','Низ','Плуг','Осторожность','Кадр','Горечь','Лиса','Инвестиции',
         'Деление','Интервал','Клуб','Понятие','Надежда','Равенство','Рубеж','Направление',
         'Мина','Прошлое','Построение'];
-    // let randomWord = words[Math.floor(Math.random()*100)];
-    // return randomWord;
     return words[Math.floor(Math.random()*100)];
 }
