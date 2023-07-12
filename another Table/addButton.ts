@@ -16,69 +16,64 @@ class CreateTable {
 
     //создание элементов таблицы
     constructor(contentMap){
-        this.wrapper.className = 'wrapper';
+        this.wrapper.className = 'wrapper'; //присвоение класса блоку под таблицу
         this.tableEl.appendChild(this.tbody); //выделение в таблице места для данных
         const content = this.sortMap(contentMap);
-        //вывод на экран пользователя несколько началльных элементов таблицы
-        this.tableEntriesIterator = content.entries();
-        this.appendRows(16);
-        this.createButton();
-        this.hasLazyLoading = false;
-        this.addListeners();
-        this.wrapper.appendChild(this.tableEl);
+        this.tableEntriesIterator = content.entries(); //присвоение итератору значения
+        this.appendRows(16); //создание нескольких начальных строк
+        this.createButton(); //создание кнопки для подгузки дополнительных строк
+        this.addListeners(); //подключение обработчиков событий
+        this.wrapper.appendChild(this.tableEl); //вставка в блок таблицы
         document.body.append(this.wrapper); //выделение в DOM места для таблицы
     }
 
-    addListeners(){
+    private addListeners(){
         //обработчик скролла
         document.addEventListener("scroll", ()=>{
-            if(this.findCoords()==true){
+            if(this.findCoords()==true)
                 this.appendRows(1); //добавление строки по необходимости
-                this.hasLazyLoading = false;
-            }
         });
-        if(this.hasLazyLoading == false){
-            //обработка событи кнопки
-            let tableButton:HTMLTableRowElement = document.querySelector('.button');
-            tableButton.addEventListener('click', ()=>{
-                tableButton.parentNode.removeChild(tableButton);
-                this.appendRows(5);
-            });
-        }
+        //обработка событи кнопки
+        // if(this.hasLazyLoading == false){
+        //     let tableButton:HTMLTableRowElement = document.querySelector('.button');
+        //     tableButton.addEventListener('click', ()=>{
+        //         tableButton.parentNode.removeChild(tableButton);
+        //         this.appendRows(5);
+        //     });
+        // }
     }
     //нахождение разницы координат последней строки и экрана браузера
-    findCoords():boolean{
+    private findCoords():boolean{
         let windowHeight = document.documentElement.clientHeight; //нахождение высоты окна браузера
         let lastRowCoord = this.tbody.lastElementChild.getBoundingClientRect(); // получение координат последней строки
-        return Math.abs(lastRowCoord.bottom-windowHeight) < 10
+        return lastRowCoord.bottom-windowHeight < 10 //последний элемент близко к границе экрана
     }
 
     //кнопка для загрузки строк, чтобы корректно работал скролл
-    createButton(){
+    private createButton(){
         const htmlRow: HTMLTableRowElement = document.createElement('tr');
         htmlRow.className = 'button';
         const htmlCell: HTMLTableCellElement = document.createElement('td'); // создание ячейки строки
-        htmlCell.colSpan  = this.globalRowLong+this.globalKeyNumber;
+        htmlCell.colSpan  = this.globalRowLong + this.globalKeyNumber;
         htmlCell.innerHTML = 'Показать ещё'; //заполнение ячейки строки
         htmlRow.appendChild(htmlCell);
         this.tbody.appendChild(htmlRow);
     }
 
     //сортировка MAP по ключу
-    sortMap(contentMap: Map<CellArray, CellArray>): Map<CellArray, CellArray>{
+    private sortMap(contentMap: Map<CellArray, CellArray>): Map<CellArray, CellArray>{
         return new Map([...contentMap.entries()].sort(
             (firstKeyArray, secondKeyArray) => firstKeyArray[0] > secondKeyArray[0] ? 1 : firstKeyArray[0] < secondKeyArray[0] ? -1 : 0
         ));
     }
 
     //добавление новых строк в таблицу
-    appendRows(size: number){
+    private appendRows(size: number){
         for(let j= 0; j < size; j++){
             const rowEntry = this.tableEntriesIterator.next().value; //получение значений для новой строки
             if(this.hasTotalRow == false && rowEntry == undefined) { //строки с итогами ещё нет и MAP закончилсы
                 this.appendTotalRow(); //добавление строки итогов
                 this.hasTotalRow = true; //переключение флага наличия строки итогов
-                // this.hasLazyLoading = false;
             }
             else if(this.hasTotalRow != true){ //строки с итогами ещё нет и MAP не закончился
                 this.globalKeyNumber = rowEntry[0].length; //запись количества ключей в глобальную переменную
@@ -91,17 +86,10 @@ class CreateTable {
     }
 
     //создание строки итогов
-    appendTotalRow(){
-        let totalRow = document.createElement('tr'); //создание строки
-        totalRow.className = 'total';
-        const zeroKey: HTMLTableCellElement = document.createElement('td'); // создание ячейки строки
-        zeroKey.innerHTML = 'Total:'; //заглавие строки
-        totalRow.appendChild(zeroKey);
-        for(let i= 1; i < this.globalKeyNumber; i++){ //запись пустых ключей в остальные клетки
-            const zeroKey: HTMLTableCellElement = document.createElement('td'); // создание ячейки строки
-            zeroKey.innerHTML = ' ';
-            totalRow.appendChild(zeroKey);
-        }
+    private appendTotalRow(){
+        let keyArray = ['Total:']; //ключ в первом столбце
+        for (let i= 1; i < this.globalKeyNumber; i++) //остальные ключи пустые
+            keyArray[i] = '';
         let totalSummArray = Array(this.globalRowLong).fill(0); //массив для суммирования значений таблицы
         let lengh = this.rowArray.length; //вычисление количества строк
         for(let i= 0; i < lengh; i++){
@@ -109,16 +97,13 @@ class CreateTable {
             for(let j= 0; j < this.globalRowLong; j++)
                 totalSummArray[j] += someArray[j]; //суммирование по всем строкам
         }
-        for(let i= 0; i < this.globalRowLong; i++){ //заполнение строк суммами
-            const totalColumnSumm: HTMLTableCellElement = document.createElement('td'); // создание ячейки строки
-            totalColumnSumm.innerHTML = <string>(<unknown>totalSummArray[i]);
-            totalRow.appendChild(totalColumnSumm);
-        }
+        let totalRow = this.createHTMLRow(keyArray, totalSummArray); //создание и заполнение строки итогов
+        totalRow.className = 'total'; //присвоение класса
         this.tableEl.insertAdjacentElement('beforeend', totalRow); //вставка строки итогов в таблицу после основных строк
     }
 
     // создание строк
-    createHTMLRow(primaryCell: CellArray, otherCellArray: CellArray): HTMLTableRowElement {
+    private createHTMLRow(primaryCell: CellArray, otherCellArray: CellArray): HTMLTableRowElement {
         const htmlRow: HTMLTableRowElement = document.createElement('tr'); // создание строки (как элемента таблицы DOM)
         primaryCell.forEach((keys) => { // заполнение первого столбца таблицы
             htmlRow.appendChild(this.createHTMLCell(keys));
@@ -130,7 +115,7 @@ class CreateTable {
     }
 
     // заполнение строк
-    createHTMLCell(cell:Cell): HTMLTableCellElement{
+    private createHTMLCell(cell:Cell): HTMLTableCellElement{
         const htmlCell: HTMLTableCellElement = document.createElement('td'); // создание ячейки строки
         htmlCell.innerHTML = <string>cell; //заполнение ячейки строки
         return htmlCell
