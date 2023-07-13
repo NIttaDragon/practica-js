@@ -3,11 +3,11 @@ type Cell = string|number;
 type CellArray = Array<Cell>;
 
 //выбор параметров таблицы
-interface tableOption{
+interface tableOptions {
     hasLazyLoading: boolean;
     hasTotalRow: boolean;
 }
-let setTableOption:tableOption ={
+let setTableOption:tableOptions = {
     hasLazyLoading: false,
     hasTotalRow: false
 }
