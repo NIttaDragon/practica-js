@@ -1,5 +1,6 @@
 // класс для построения таблицы
-class TableClass {
+class TableFragment {
+    private wrapper : HTMLDivElement;
     private tableEl : HTMLTableElement;
     private tbody : HTMLTableSectionElement;
     private tableEntriesIterator; //итератор для перебора значений MAP
@@ -8,24 +9,28 @@ class TableClass {
     private globalRowLong : number; //глобальная переменная для хранения длины строк
 
     //создание элементов таблицы
-    constructor(contentMap, hasLazyLoading, hasTotalRow){
-        const wrapper :HTMLDivElement = this.createEmptyHTMLDivElement('wrapper');
-        this.tableEl = this.createEmptyHTMLTable('table');
-        this.tbody = this.createEmptyHTMLTBodyElement('tbody')
-        this.tableEl.appendChild(this.tbody);
+    constructor(contentMap, option: TableOption){
+        this.createEmptyHTMLTable();
         const content = this.sortMap(contentMap);
         this.tableEntriesIterator = content.entries();
         this.appendRows(20);
-        if (hasLazyLoading === false) { //кнопка
+        if (option.hasLazyLoading === false) { //кнопка
             this.createButton();
             this.addClickListener();
         }
         else    this.addScrollListeners(); //скролл
-        if (hasTotalRow === true)  this.appendTotalRow();
-        wrapper.appendChild(this.tableEl);
-        document.body.append(wrapper);
+        if (option.hasTotalRow === true)  this.appendTotalRow();
     }
 
+    //создание пустой таблицы из элементов
+    private createEmptyHTMLTable(){
+        this.wrapper = this.createEmptyHTMLDivElement('wrapper');
+        this.tableEl = this.createEmptyHTMLTableElement('table');
+        this.tbody = this.createEmptyHTMLTBodyElement('tbody')
+        this.tableEl.appendChild(this.tbody);
+        this.wrapper.appendChild(this.tableEl);
+        document.body.append(this.wrapper);
+    }
     //создание пустого div элемента
     private createEmptyHTMLDivElement(className:string) : HTMLDivElement{
         const newDivElement : HTMLDivElement = document.createElement('div');
@@ -34,7 +39,7 @@ class TableClass {
     }
 
     //создание пустого table элемента
-    private createEmptyHTMLTable(className : string) : HTMLTableElement{
+    private createEmptyHTMLTableElement(className : string) : HTMLTableElement{
         const newHTMLTable : HTMLTableElement = document.createElement('table');
         newHTMLTable.className = className;
         return newHTMLTable
