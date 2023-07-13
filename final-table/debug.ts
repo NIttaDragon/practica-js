@@ -1,6 +1,5 @@
 // создание таблицы
-const table : TableClass = new TableClass(createContentMap(3,100, 6), setTableOption.hasLazyLoading, setTableOption.hasTotalRow);
-
+const table : TableFragment = new TableFragment(createContentMap(3,100, 6), setTableOption );
 
 // создание и заполнение MAP
 function createContentMap(keyNumber: number, columnNumber: number, rowSize: number): Map<CellArray, CellArray> {
