@@ -9,10 +9,9 @@ class TableClass {
 
     //создание элементов таблицы
     constructor(contentMap, hasLazyLoading, hasTotalRow){
-        const wrapper :HTMLDivElement = this.createEmptyHTMLDivElement();
-        wrapper.className = 'wrapper';
-        this.tableEl = this.createEmptyHTMLTable();
-        this.tbody = this.createEmptyHTMLTBodyElement()
+        const wrapper :HTMLDivElement = this.createEmptyHTMLDivElement('wrapper');
+        this.tableEl = this.createEmptyHTMLTable('table');
+        this.tbody = this.createEmptyHTMLTBodyElement('tbody')
         this.tableEl.appendChild(this.tbody);
         const content = this.sortMap(contentMap);
         this.tableEntriesIterator = content.entries();
@@ -28,18 +27,24 @@ class TableClass {
     }
 
     //создание пустого div элемента
-    private createEmptyHTMLDivElement() : HTMLDivElement{
-        return document.createElement('div')
+    private createEmptyHTMLDivElement(className:string) : HTMLDivElement{
+        const newDivElement : HTMLDivElement = document.createElement('div');
+        newDivElement.className = className;
+        return newDivElement
     }
 
     //создание пустого table элемента
-    private createEmptyHTMLTable() : HTMLTableElement{
-        return document.createElement('table')
+    private createEmptyHTMLTable(className : string) : HTMLTableElement{
+        const newHTMLTable : HTMLTableElement = document.createElement('table');
+        newHTMLTable.className = className;
+        return newHTMLTable
     }
 
     //создание пустого tbody элемента
-    private createEmptyHTMLTBodyElement() :HTMLTableSectionElement{
-        return document.createElement('tbody')
+    private createEmptyHTMLTBodyElement(className : string) :HTMLTableSectionElement{
+        const newHTMLTBodyElement : HTMLTableSectionElement = document.createElement('tbody');
+        newHTMLTBodyElement.className = className;
+        return newHTMLTBodyElement
     }
 
     //создание пустой строки tr
