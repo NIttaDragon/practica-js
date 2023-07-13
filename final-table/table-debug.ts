@@ -9,7 +9,7 @@ class TableFragment {
     private globalRowLong : number; //глобальная переменная для хранения длины строк
 
     //создание элементов таблицы
-    constructor(contentMap, option: TableOption){
+    constructor(contentMap, option: TableOptions){
         this.createEmptyHTMLTable();
         const content = this.sortMap(contentMap);
         this.tableEntriesIterator = content.entries();
