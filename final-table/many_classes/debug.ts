@@ -1,7 +1,9 @@
 // создание таблицы
-// const lazyTable : LazyTable = new LazyTable(createContentMap(3, 1000, 6), hasTotalRow );
-const buttonTable : ButtonedTable = new ButtonedTable(createContentMap(3, 1000, 6), hasTotalRow);
-// const pageTable : PagintedTable = new PagintedTable(createContentMap(3, 1000, 6), hasTotalRow);
+// выбор загрузки таблицы
+const newTable :LazyTable | ButtonedTable | PagintedTable  = (setTableOption.renderType === 0) ?
+    new LazyTable(createContentMap(setTableOption.keyNumber, setTableOption.columnNumber, setTableOption.rowSize), setTableOption.hasTotalRow ) : (setTableOption.renderType === 1) ?
+        new ButtonedTable(createContentMap(setTableOption.keyNumber, setTableOption.columnNumber, setTableOption.rowSize), setTableOption.hasTotalRow) :
+        new PagintedTable(createContentMap(setTableOption.keyNumber, setTableOption.columnNumber, setTableOption.rowSize), setTableOption.hasTotalRow);
 
 // создание и заполнение MAP
 function createContentMap(keyNumber: number, columnNumber: number, rowSize: number): Map<CellArray, CellArray> {
