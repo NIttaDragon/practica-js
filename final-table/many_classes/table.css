@@ -1,0 +1,37 @@
+.wrapper{
+    width: 95%;
+    margin: 5px;
+}
+.wrapper tbody td{
+    table-layout: fixed;
+    text-align: left;
+    width: 100px;
+    height: 20px;
+    border: 1px solid grey;
+    overflow: hidden;
+    padding: 10px 15px;
+    font-size: 12px;
+    vertical-align: top;
+}
+.total td{
+    text-align: left;
+    width: 40px;
+    height: 20px;
+    border: 1px solid grey;
+    overflow: hidden;
+    padding: 10px 15px;
+    font-size: 14px;
+    vertical-align: top;
+}
+.wrapper tbody .button td{
+    text-align: center;
+    background: mediumaquamarine;
+}
+.buttons td{
+    text-align: left;
+    border: 1px solid grey;
+    overflow: hidden;
+    padding: 10px 15px;
+    font-size: 14px;
+    vertical-align: top;
+}
