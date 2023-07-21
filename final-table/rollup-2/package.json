@@ -1,0 +1,12 @@
+{
+  "name": "firstproject",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "second": "http-server",
+    "starty" : "rollup -c -w"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.29.3"
+  }
+}
